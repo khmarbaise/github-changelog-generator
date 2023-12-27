@@ -79,7 +79,7 @@ class GitHubServiceTests {
 	void getIssue() {
 		expectGet(ISSUE_URL + "/12730").andRespond(withJsonFrom("issue.json"));
 		Issue issue = this.service.getIssue("12730", Repository.of("org/repo"));
-		assertThat(issue.getNumber()).isEqualTo("12730");
+		assertThat(issue.number()).isEqualTo("12730");
 	}
 
 	@Test
@@ -93,14 +93,14 @@ class GitHubServiceTests {
 	void getIssuesWhenNoIssues() {
 		expectGet(ISSUES_URL + "23&state=closed").andRespond(withJsonOf("[]"));
 		List<Issue> issues = this.service.getIssuesForMilestone(23, Repository.of("org/repo"));
-		assertThat(issues.size()).isEqualTo(0);
+		assertThat(issues).isEmpty();
 	}
 
 	@Test
 	void getIssuesWhenSinglePageOfIssuesPresent() {
 		expectGet(ISSUES_URL + "23&state=closed").andRespond(withJsonFrom("closed-issues-for-milestone-page-1.json"));
 		List<Issue> issues = this.service.getIssuesForMilestone(23, Repository.of("org/repo"));
-		assertThat(issues.size()).isEqualTo(30);
+		assertThat(issues).hasSize(30);
 	}
 
 	@Test
@@ -111,7 +111,7 @@ class GitHubServiceTests {
 			.andRespond(withJsonFrom("closed-issues-for-milestone-page-1.json").headers(headers));
 		expectGet("/page-two").andRespond(withJsonFrom("closed-issues-for-milestone-page-2.json"));
 		List<Issue> issues = this.service.getIssuesForMilestone(23, Repository.of("org/repo"));
-		assertThat(issues.size()).isEqualTo(60);
+		assertThat(issues).hasSize(60);
 	}
 
 	private ResponseActions expectGet(String expectedUri) {

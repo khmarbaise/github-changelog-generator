@@ -17,7 +17,6 @@
 package io.spring.githubchangeloggenerator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -39,18 +38,13 @@ import io.spring.githubchangeloggenerator.github.payload.Issue;
  */
 class ChangelogSections {
 
-	private static final List<ChangelogSection> DEFAULT_SECTIONS;
-	static {
-		List<ChangelogSection> sections = new ArrayList<>();
-		add(sections, ":star: New Features", "enhancement");
-		add(sections, ":lady_beetle: Bug Fixes", "bug", "regression");
-		add(sections, ":notebook_with_decorative_cover: Documentation", "documentation");
-		add(sections, ":hammer: Dependency Upgrades", "dependency-upgrade");
-		DEFAULT_SECTIONS = Collections.unmodifiableList(sections);
-	}
+	private static final List<ChangelogSection> DEFAULT_SECTIONS = List.of(add(":star: New Features", "enhancement"),
+			add(":lady_beetle: Bug Fixes", "bug", "regression"),
+			add(":notebook_with_decorative_cover: Documentation", "documentation"),
+			add(":hammer: Dependency Upgrades", "dependency-upgrade"));
 
-	private static void add(List<ChangelogSection> sections, String title, String... labels) {
-		sections.add(new ChangelogSection(title, null, null, labels));
+	private static ChangelogSection add(String title, String... labels) {
+		return new ChangelogSection(title, null, null, labels);
 	}
 
 	private final List<ChangelogSection> sections;
@@ -74,15 +68,14 @@ class ChangelogSections {
 	}
 
 	private ChangelogSection adapt(ApplicationProperties.Section propertySection) {
-		return new ChangelogSection(propertySection.getTitle(), propertySection.getGroup(), propertySection.getSort(),
-				propertySection.getLabels());
+		return new ChangelogSection(propertySection.title(), propertySection.group(), propertySection.sort(),
+				propertySection.labels());
 	}
 
 	Map<ChangelogSection, List<Issue>> collate(List<Issue> issues) {
 		SortedMap<ChangelogSection, List<Issue>> collated = new TreeMap<>(Comparator.comparing(this.sections::indexOf));
 		for (Issue issue : issues) {
-			List<ChangelogSection> sections = getSections(issue);
-			for (ChangelogSection section : sections) {
+			for (ChangelogSection section : getSections(issue)) {
 				collated.computeIfAbsent(section, (key) -> new ArrayList<>());
 				collated.get(section).add(issue);
 			}

@@ -54,6 +54,11 @@ public class GitHubService {
 
 	private final RestTemplate restTemplate;
 
+	/**
+	 * Create a new instance of the GitHubService.
+	 * @param builder {@link RestTemplateBuilder}.
+	 * @param properties {@link GitHubProperties}.
+	 */
 	public GitHubService(RestTemplateBuilder builder, GitHubProperties properties) {
 		String username = properties.getUsername();
 		String password = properties.getPassword();
@@ -66,19 +71,19 @@ public class GitHubService {
 
 	public int getMilestoneNumber(String milestoneTitle, Repository repository) {
 		Assert.hasText(milestoneTitle, "MilestoneName must not be empty");
-		List<Milestone> milestones = getAll(Milestone.class, MILESTONES_URI, repository.getOwner(),
-				repository.getName());
-		for (Milestone milestone : milestones) {
-			if (milestoneTitle.equalsIgnoreCase(milestone.getTitle())) {
-				return milestone.getNumber();
-			}
-		}
-		throw new IllegalStateException("Unable to find milestone with title '" + milestoneTitle + "'");
+		List<Milestone> milestones = getAll(Milestone.class, MILESTONES_URI, repository.owner(), repository.name());
+
+		return milestones.stream()
+			.filter((ms) -> milestoneTitle.equalsIgnoreCase(ms.title()))
+			.findFirst()
+			.map(Milestone::number)
+			.orElseThrow(
+					() -> new IllegalStateException("Unable to find milestone with title '" + milestoneTitle + "'"));
 	}
 
 	public Issue getIssue(String issueNumber, Repository repository) {
 		try {
-			return this.restTemplate.getForObject(ISSUE_URI, Issue.class, repository.getOwner(), repository.getName(),
+			return this.restTemplate.getForObject(ISSUE_URI, Issue.class, repository.owner(), repository.name(),
 					issueNumber);
 		}
 		catch (RestClientException clientException) {
@@ -87,7 +92,7 @@ public class GitHubService {
 	}
 
 	public List<Issue> getIssuesForMilestone(int milestoneNumber, Repository repository) {
-		return getAll(Issue.class, ISSUES_URI, repository.getOwner(), repository.getName(), milestoneNumber);
+		return getAll(Issue.class, ISSUES_URI, repository.owner(), repository.name(), milestoneNumber);
 	}
 
 	private <T> List<T> getAll(Class<T> type, String url, Object... uriVariables) {

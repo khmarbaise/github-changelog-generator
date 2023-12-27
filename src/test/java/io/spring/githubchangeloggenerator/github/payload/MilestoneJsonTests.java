@@ -37,8 +37,8 @@ class MilestoneJsonTests {
 	@Test
 	void issueDeserialization() throws Exception {
 		Milestone milestone = this.json.read("milestone.json").getObject();
-		assertThat(milestone.getNumber()).isEqualTo(94);
-		assertThat(milestone.getTitle()).isEqualTo("General Backlog");
+		assertThat(milestone.number()).isEqualTo(94);
+		assertThat(milestone.title()).isEqualTo("General Backlog");
 	}
 
 }

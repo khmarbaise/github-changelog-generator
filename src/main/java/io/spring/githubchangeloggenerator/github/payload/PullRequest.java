@@ -22,17 +22,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents a Github Pull Request.
  *
  * @author Madhura Bhave
+ * @param url The url of the pull request.
  */
-public class PullRequest {
-
-	private final String url;
-
-	public PullRequest(@JsonProperty("url") String url) {
-		this.url = url;
-	}
-
-	public String getUrl() {
-		return this.url;
-	}
+public record PullRequest(@JsonProperty("url") String url) {
 
 }

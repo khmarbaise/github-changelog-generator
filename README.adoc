@@ -187,6 +187,16 @@ changelog:
 ----
 
 
+= Create ChangeLog
+[source,bash]
+----
+java -jar target/github-changelog-generator.jar \
+  --spring.config.location=$(pwd)/release-notes.yml  \
+  --changelog.repository=khmarbaise/maven-it-extension  \
+  itf-extension-0.13.0 itf-changelog.md
+----
+
+
 
 === License
 This project is Open Source software released under the

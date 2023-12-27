@@ -1,0 +1,13 @@
+changelog:
+  sections:
+  - title: "Enhancements"
+    labels: ["enhancement"]
+  - title: "Improvement"
+    labels: ["improvement"]
+  - title: ":lady_beetle: Bugs"
+    labels: ["bug"]
+  - title: "Build Improvements"
+    labels: ["build"]
+  - title: ":hammer: Dependency Upgrade"
+    labels: ["dependency-upgrade", "dependabot"]
+    group: "dependencies"

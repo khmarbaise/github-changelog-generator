@@ -16,42 +16,13 @@
 
 package io.spring.githubchangeloggenerator.github.payload;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Details of a Github user.
  *
  * @author Madhura Bhave
+ * @param name The name of the user.
  */
-public class User {
-
-	private final String name;
-
-	public User(@JsonProperty("login") String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		User other = (User) o;
-		return Objects.equals(this.name, other.name);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.name);
-	}
-
+public record User(@JsonProperty("login") String name) {
 }

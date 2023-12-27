@@ -65,8 +65,8 @@ class ChangelogSection {
 
 	boolean isMatchFor(Issue issue) {
 		for (String candidate : this.labels) {
-			for (Label label : issue.getLabels()) {
-				if (label.getName().contains(candidate)) {
+			for (Label label : issue.labels()) {
+				if (label.name().contains(candidate)) {
 					return true;
 				}
 			}

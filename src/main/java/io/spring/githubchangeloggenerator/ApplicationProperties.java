@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.util.Assert;
 
@@ -37,7 +36,6 @@ import io.spring.githubchangeloggenerator.github.service.Repository;
  * @author Gary Russell
  */
 @ConfigurationProperties(prefix = "changelog")
-@ConstructorBinding
 public class ApplicationProperties {
 
 	/**
@@ -118,51 +116,20 @@ public class ApplicationProperties {
 
 	/**
 	 * Properties for a single changelog section.
+	 *
+	 * @param title Title of the section.
+	 * @param group Group used to bound the contained issues. Issues appear in the first
+	 * section of each group.
+	 * @param sort Sort order for issues within this section.
+	 * @param labels Labels used to identify if an issue is for the section.
 	 */
-	public static class Section {
-
-		/**
-		 * Title of the section.
-		 */
-		private final String title;
-
-		/**
-		 * Group used to bound the contained issues. Issues appear in the first section of
-		 * each group.
-		 */
-		private final String group;
-
-		/**
-		 * Sort order for issues within this section.
-		 */
-		private final IssueSort sort;
-
-		/**
-		 * Labels used to identify if an issue is for the section.
-		 */
-		private final Set<String> labels;
+	public record Section(String title, @DefaultValue("default") String group, IssueSort sort, Set<String> labels) {
 
 		public Section(String title, @DefaultValue("default") String group, IssueSort sort, Set<String> labels) {
-			this.title = title;
 			this.group = (group != null) ? group : "default";
+			this.title = title;
 			this.sort = sort;
 			this.labels = labels;
-		}
-
-		public String getTitle() {
-			return this.title;
-		}
-
-		public String getGroup() {
-			return this.group;
-		}
-
-		public IssueSort getSort() {
-			return this.sort;
-		}
-
-		public Set<String> getLabels() {
-			return this.labels;
 		}
 
 	}

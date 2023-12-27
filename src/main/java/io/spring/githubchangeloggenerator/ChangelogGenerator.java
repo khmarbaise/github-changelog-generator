@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -53,10 +52,10 @@ import io.spring.githubchangeloggenerator.github.service.Repository;
 @Component
 public class ChangelogGenerator {
 
-	private static final Comparator<Issue> TITLE_COMPARATOR = Comparator.comparing(Issue::getTitle,
+	private static final Comparator<Issue> TITLE_COMPARATOR = Comparator.comparing(Issue::title,
 			String.CASE_INSENSITIVE_ORDER);
 
-	private static final List<Escape> escapes = Arrays.asList(gitHubUserMentions(), htmlTags(), markdownStyling());
+	private static final List<Escape> escapes = List.of(gitHubUserMentions(), htmlTags(), markdownStyling());
 
 	private final GitHubService service;
 
@@ -112,22 +111,18 @@ public class ChangelogGenerator {
 	}
 
 	private boolean isExcluded(Issue issue) {
-		return issue.getLabels().stream().anyMatch(this::isExcluded);
+		return issue.labels().stream().anyMatch(this::isExcluded);
 	}
 
 	private boolean isExcluded(Label label) {
-		return this.excludeLabels.contains(label.getName());
+		return this.excludeLabels.contains(label.name());
 	}
 
 	private int resolveMilestoneReference(String milestone) {
-		switch (this.milestoneReference) {
-			case TITLE:
-				return this.service.getMilestoneNumber(milestone, this.repository);
-			case ID:
-				return Integer.parseInt(milestone);
-			default:
-				throw new IllegalStateException("Unsupported milestone reference value " + this.milestoneReference);
-		}
+		return switch (this.milestoneReference) {
+			case TITLE -> this.service.getMilestoneNumber(milestone, this.repository);
+			case ID -> Integer.parseInt(milestone);
+		};
 	}
 
 	private String generateContent(List<Issue> issues) {
@@ -146,7 +141,7 @@ public class ChangelogGenerator {
 	private void addSectionContent(StringBuilder content, Map<ChangelogSection, List<Issue>> sectionIssues) {
 		sectionIssues.forEach((section, issues) -> {
 			sort(section.getSort(), issues);
-			content.append((content.length() != 0) ? String.format("%n") : "");
+			content.append((!content.isEmpty()) ? String.format("%n") : "");
 			content.append("## ").append(section).append(String.format("%n%n"));
 			issues.stream().map(this::getFormattedIssue).forEach(content::append);
 		});
@@ -160,7 +155,7 @@ public class ChangelogGenerator {
 	}
 
 	private String getFormattedIssue(Issue issue) {
-		String title = issue.getTitle();
+		String title = issue.title();
 		for (Escape escape : escapes) {
 			title = escape.apply(title);
 		}
@@ -168,7 +163,7 @@ public class ChangelogGenerator {
 	}
 
 	private String getLinkToIssue(Issue issue) {
-		return "[#" + issue.getNumber() + "]" + "(" + issue.getUrl() + ")";
+		return "[#" + issue.number() + "]" + "(" + issue.url() + ")";
 	}
 
 	private Set<User> getContributors(List<Issue> issues) {
@@ -177,18 +172,18 @@ public class ChangelogGenerator {
 		}
 		return issues.stream()
 			.map(this::getPortedReferenceIssue)
-			.filter((issue) -> issue.getPullRequest() != null)
-			.map(Issue::getUser)
+			.filter((issue) -> issue.pullRequest() != null)
+			.map(Issue::user)
 			.filter(this::isIncludedContributor)
 			.collect(Collectors.toSet());
 	}
 
 	private Issue getPortedReferenceIssue(Issue issue) {
 		for (PortedIssue portedIssue : this.portedIssues) {
-			List<String> labelNames = issue.getLabels().stream().map(Label::getName).collect(Collectors.toList());
+			List<String> labelNames = issue.labels().stream().map(Label::name).toList();
 			if (labelNames.contains(portedIssue.getLabel())) {
 				Pattern pattern = portedIssue.getBodyExpression();
-				Matcher matcher = pattern.matcher(issue.getBody());
+				Matcher matcher = pattern.matcher(issue.body());
 				if (matcher.matches()) {
 					String issueNumber = matcher.group(1);
 					Issue referencedIssue = this.service.getIssue(issueNumber, this.repository);
@@ -202,7 +197,7 @@ public class ChangelogGenerator {
 	}
 
 	private boolean isIncludedContributor(User user) {
-		return !this.excludeContributors.contains(user.getName());
+		return !this.excludeContributors.contains(user.name());
 	}
 
 	private void addContributorsContent(StringBuilder content, Set<User> contributors) {
@@ -213,11 +208,7 @@ public class ChangelogGenerator {
 	}
 
 	private String formatContributors(Set<User> contributors) {
-		List<String> names = contributors.stream()
-			.map(User::getName)
-			.map((name) -> "@" + name)
-			.sorted()
-			.collect(Collectors.toList());
+		List<String> names = contributors.stream().map(User::name).map((name) -> "@" + name).sorted().toList();
 		StringBuilder formatted = new StringBuilder();
 		String separator = (names.size() > 2) ? ", " : " ";
 		for (int i = 0; i < names.size(); i++) {

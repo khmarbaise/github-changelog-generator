@@ -22,17 +22,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents Github label.
  *
  * @author Madhura Bhave
+ * @param name The name of the label.
  */
-public class Label {
-
-	private final String name;
-
-	public Label(@JsonProperty("name") String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return this.name;
-	}
+public record Label(@JsonProperty("name") String name) {
 
 }

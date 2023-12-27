@@ -24,64 +24,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Details of a GitHub issue.
  *
  * @author Madhura Bhave
+ * @param number The issue number.
+ * @param title The title of the issue.
+ * @param user The user of the issue.
+ * @param labels The labels of this issue.
+ * @param url The url of the issue
+ * @param pullRequest The related pull request
+ * @param body The body of the issue.
  */
-public class Issue {
-
-	private final String number;
-
-	private final String title;
-
-	private final User user;
-
-	private final List<Label> labels;
-
-	private final String url;
-
-	private final PullRequest pullRequest;
-
-	private final String body;
-
-	public Issue(@JsonProperty("number") String number, @JsonProperty("title") String title,
-			@JsonProperty("user") User user, @JsonProperty("labels") List<Label> labels,
-			@JsonProperty("html_url") String url, @JsonProperty("pull_request") PullRequest pullRequest,
-			@JsonProperty("body") String body) {
-		super();
-		this.number = number;
-		this.title = title;
-		this.user = user;
-		this.labels = labels;
-		this.url = url;
-		this.pullRequest = pullRequest;
-		this.body = body;
-	}
-
-	public String getTitle() {
-		return this.title;
-	}
-
-	public List<Label> getLabels() {
-		return this.labels;
-	}
-
-	public User getUser() {
-		return this.user;
-	}
-
-	public String getUrl() {
-		return this.url;
-	}
-
-	public String getNumber() {
-		return this.number;
-	}
-
-	public PullRequest getPullRequest() {
-		return this.pullRequest;
-	}
-
-	public String getBody() {
-		return this.body;
-	}
+public record Issue(@JsonProperty("number") String number, @JsonProperty("title") String title,
+		@JsonProperty("user") User user, @JsonProperty("labels") List<Label> labels,
+		@JsonProperty("html_url") String url, @JsonProperty("pull_request") PullRequest pullRequest,
+		@JsonProperty("body") String body) {
 
 	@Override
 	public String toString() {

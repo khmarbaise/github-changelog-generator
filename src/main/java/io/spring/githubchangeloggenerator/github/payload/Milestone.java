@@ -22,24 +22,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * A single Github milestone.
  *
  * @author Phillip Webb
+ * @param number The number of the milestone.
+ * @param title The title of the milestone.
  */
-public class Milestone {
-
-	private final int number;
-
-	private final String title;
-
-	public Milestone(@JsonProperty("number") int number, @JsonProperty("title") String title) {
-		this.number = number;
-		this.title = title;
-	}
-
-	public int getNumber() {
-		return this.number;
-	}
-
-	public String getTitle() {
-		return this.title;
-	}
+public record Milestone(@JsonProperty("number") int number, @JsonProperty("title") String title) {
 
 }

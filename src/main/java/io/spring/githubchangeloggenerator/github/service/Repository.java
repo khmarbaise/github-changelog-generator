@@ -22,46 +22,10 @@ import org.springframework.util.Assert;
  * A reference to a specific GitHub repository.
  *
  * @author Phillip Webb
+ * @param owner The owner of the repository.
+ * @param name The name of the repository.
  */
-public final class Repository {
-
-	private final String owner;
-
-	private final String name;
-
-	private Repository(String owner, String name) {
-		this.owner = owner;
-		this.name = name;
-	}
-
-	public String getOwner() {
-		return this.owner;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-		Repository other = (Repository) obj;
-		return this.name.equals(other.name) && this.owner.equals(other.owner);
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + this.name.hashCode();
-		result = prime * result + this.owner.hashCode();
-		return result;
-	}
+public record Repository(String owner, String name) {
 
 	@Override
 	public String toString() {

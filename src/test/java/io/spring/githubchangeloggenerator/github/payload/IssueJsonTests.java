@@ -38,8 +38,8 @@ class IssueJsonTests {
 	@Test
 	void issueDeserialization() throws Exception {
 		Issue issue = this.json.read("issue.json").getObject();
-		assertThat(issue.getNumber()).isEqualTo("12730");
-		assertThat(issue.getLabels()).flatExtracting(Label::getName).containsExactly("type: regression");
+		assertThat(issue.number()).isEqualTo("12730");
+		assertThat(issue.labels()).flatExtracting(Label::name).containsExactly("type: regression");
 	}
 
 }
