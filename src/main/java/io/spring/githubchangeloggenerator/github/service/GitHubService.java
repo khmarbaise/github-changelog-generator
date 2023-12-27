@@ -99,8 +99,8 @@ public class GitHubService {
 		List<T> all = new ArrayList<>();
 		Page<T> page = getPage(type, url, uriVariables);
 		while (page != null) {
-			all.addAll(page.getContent());
-			page = page.getNextPage();
+			all.addAll(page.content());
+			page = page.nextPage();
 		}
 		return all;
 	}
